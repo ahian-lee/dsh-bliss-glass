@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8ec5ff"/><stop offset="1" stop-color="#e3f2fe"/>
+    </linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7ecb63"/><stop offset="1" stop-color="#3f8f3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#sky)"/>
+  <ellipse cx="19" cy="14" rx="10" ry="4.5" fill="#ffffff" opacity=".92"/>
+  <ellipse cx="45" cy="10" rx="8" ry="3.8" fill="#ffffff" opacity=".7"/>
+  <path d="M0 47 Q 18 27 34 42 T 64 40 V 64 H 0 Z" fill="url(#hill)"/>
+  <rect y="58" width="64" height="6" fill="#2e7d32"/>
+</svg>

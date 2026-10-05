@@ -1,0 +1,39 @@
+{
+  "name": "dsh-bliss-glass",
+  "version": "1.0.0",
+  "description": "Windows XP-era scenery wallpapers paired with a modern frosted-glass UI for the DeepSeek Harness web surface. Desktop and mobile.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahian-lee/dsh-bliss-glass.git"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./icon.svg": "./icon.svg",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "icon": "./icon.svg",
+  "meta": {
+    "title": "Bliss Glass",
+    "description": "XP scenery wallpapers x frosted-glass UI. Light/dark aware, desktop and mobile."
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  }
+}
