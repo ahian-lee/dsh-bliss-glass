@@ -45,11 +45,27 @@ The two halves are deliberate. The wallpaper keeps its colors and calm; the inte
 
 ### 📦 Install
 
-```sh
-dsh plugin add github:ahian-lee/dsh-bliss-glass
+**Desktop app (recommended)** — open **Plugins → Add plugin**, paste the repository URL below, and confirm. No profile needs to be chosen; the app targets its own profile for you.
+
+```
+https://github.com/ahian-lee/dsh-bliss-glass
 ```
 
-or install it from the [dsh-market](https://github.com/dsh-market/dsh-market) **Themes** tab.
+**Desktop, from the command line** — use the `dsh` that ships with the desktop app. `--profile` is required and must come **before** the pnpm arguments:
+
+```sh
+dsh plugin --profile desktop add github:ahian-lee/dsh-bliss-glass
+```
+
+**Web / other profiles** — same command with the profile you boot:
+
+```sh
+dsh plugin --profile web add github:ahian-lee/dsh-bliss-glass
+```
+
+> Running the desktop app? Quit it completely before installing from the command line — the `desktop` profile belongs to the app, and the app rewrites it on exit.
+
+**dsh-market** — or one click from the [dsh-market](https://github.com/dsh-market/dsh-market) **Themes** tab.
 
 ### 🧭 Wallpaper picker
 
@@ -63,10 +79,10 @@ The client module renders a fixed background layer and applies the frosted styli
 
 ### 🗑 Uninstall
 
-Remove the plugin from the Plugin Manager, or:
+Remove the plugin from the Plugin Manager, or (quit the app first):
 
 ```sh
-dsh plugin --profile your-profile remove dsh-bliss-glass
+dsh plugin --profile desktop remove dsh-bliss-glass
 ```
 
 ---
@@ -99,11 +115,27 @@ dsh plugin --profile your-profile remove dsh-bliss-glass
 
 ### 📦 安装
 
-```sh
-dsh plugin add github:ahian-lee/dsh-bliss-glass
+**桌面应用（推荐）**——打开应用内 **插件 → 添加插件**，粘贴下面的仓库地址并确认。不需要选择 profile，应用会自动对接到自己的配置。
+
+```
+https://github.com/ahian-lee/dsh-bliss-glass
 ```
 
-或在 [dsh-market](https://github.com/dsh-market/dsh-market) 的**主题**分类中安装。
+**桌面端命令行**——使用桌面版自带的 `dsh`。`--profile` 是必填项，且必须写在 pnpm 参数**之前**：
+
+```sh
+dsh plugin --profile desktop add github:ahian-lee/dsh-bliss-glass
+```
+
+**Web / 其他配置**——换成你实际启动的 profile 名称即可：
+
+```sh
+dsh plugin --profile web add github:ahian-lee/dsh-bliss-glass
+```
+
+> 若正在运行桌面应用，命令行安装前请先**完全退出应用**——`desktop` 配置由应用本身管理，退出时会被应用改写。
+
+**dsh-market**——或在 [dsh-market](https://github.com/dsh-market/dsh-market) 的**主题**分类中一键安装。
 
 ### 🧭 壁纸切换器
 
@@ -117,10 +149,10 @@ Client 模块渲染一层固定背景，并通过 DSH **主题 token**（`--dsw-
 
 ### 🗑 卸载
 
-在插件管理器中移除，或：
+在插件管理器中移除，或（先退出应用）：
 
 ```sh
-dsh plugin --profile your-profile remove dsh-bliss-glass
+dsh plugin --profile desktop remove dsh-bliss-glass
 ```
 
 ---
