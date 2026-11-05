@@ -143,9 +143,9 @@ dsh plugin --profile web add github:ahian-lee/dsh-bliss-glass
 
 ### 🔍 实现方式（供评审参考）
 
-Client 模块渲染一层固定背景，并通过 DSH **主题 token**（`--dsw-alias-bg-layer-*`、`--dsw-specific-*`）与少量按当前构建面板类名匹配的元素规则（`RlGAzG_card`、`Xt1eiG_panel` 等）应用磨砂样式。壁纸切换器在浏览器内用 canvas 对导入图片降采样并重新编码；导入的图片存于 `localStorage`。不修改任何宿主文件，数据不出本机。
+Client 模块渲染一层固定背景，并通过 DSH **主题 token**（`--dsw-alias-bg-layer-*`、`--dsw-specific-*`）与少量按当前构建面板类名匹配的元素规则（如 `GRgSLq_card`、`mP3x-q_sidebarCol`）应用磨砂样式。壁纸切换器在浏览器内用 canvas 对导入图片降采样并重新编码；导入的图片存于 `localStorage`。不修改任何宿主文件，数据不出本机。
 
-> 面板类名钩子按 DeepSeek Harness `0.2.0-rc.x` 匹配。其他构建上壁纸与 token 层照常工作；哈希类名相关的细化样式可能需要更新选择器。
+> 面板类名钩子按 DeepSeek Harness `0.2.1-rc.5` 匹配，并保留旧构建的类名作为回退（DSH 每次发版都会重新生成 CSS Modules 哈希）。其他构建上壁纸与 token 层照常工作；更细的类名相关样式可能需要更新选择器。
 
 ### 🗑 卸载
 
