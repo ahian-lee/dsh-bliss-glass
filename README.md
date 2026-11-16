@@ -73,10 +73,21 @@ Click the small glass button in the bottom-right corner: a menu opens with thumb
 
 ### 🔍 How it works (for reviewers)
 
-The client module renders a fixed background layer and applies the frosted styling through DSH **theme tokens** (`--dsw-alias-bg-layer-*`, `--dsw-specific-*`) plus a small set of element rules matched against this build's panel classes (`RlGAzG_card`, `Xt1eiG_panel`, …). The wallpaper picker downscales and re-encodes imported images with a canvas in the browser; imported images are stored in `localStorage`. No host files are modified and no data leaves the machine.
+The client module renders a fixed background layer and applies the frosted styling through DSH **theme tokens** (`--dsw-alias-bg-layer-*`, `--dsw-specific-*`) plus a small set of element rules that prefer DSH's stable semantic hooks (`data-composer-card`, `data-composer-seat`, `data-conversation-region="chat"`, `data-shell-overlay`) and CSS Modules class suffixes (`_bubble`, `_sidebarCol`) instead of hash-prefixed names that change every release. The wallpaper picker downscales and re-encodes imported images with a canvas in the browser; imported images are stored in `localStorage`. No host files are modified and no data leaves the machine.
 
-> Panel class hooks are matched against DeepSeek Harness `0.2.0-rc.x`. On other builds the wallpaper and token layer keep working; the hashed-class refinements may need a selector update.
+> Panel hooks are immune to CSS Modules hash churn: stable attributes and class suffixes do not change between releases, and the previously tested hashes are kept only as a fallback. A selector update is needed only if DSH changes the structure or meaning of those attributes.
 
+### 🛠 Robustness (v1.0.3)
+
+Earlier versions could lose their styles for good: if the host rebuilt its DOM, another plugin reloaded, or a hot replace left an orphan node behind, the `<style>` element was detached and the picker degraded into an unstyled bare element — wallpapers gone, thumbnails stretched into full rows. There was no way back short of a manual reload.
+
+v1.0.3 makes the decoration self-healing:
+
+- **Dedicated permanent stylesheet for the picker.** The picker's CSS lives in its own `<style>` that `applyMode()` never rewrites, so it cannot be lost when the light/dark path re-renders.
+- **Idempotent cleanup on mount.** Nodes left by a previous instance are removed first, so hot replace can no longer leave an orphaned, style-less menu.
+- **Re-attach guard.** A `MutationObserver` on `<head>`/`<body>` plus a 2-second timer re-attaches any detached node. Repairs are recorded in `window.__blissDiag` (`{applies, repairs}`) for troubleshooting.
+
+Appearance is unchanged.
 ### 🗑 Uninstall
 
 Remove the plugin from the Plugin Manager, or (quit the app first):
@@ -147,6 +158,17 @@ Client 模块渲染一层固定背景，并通过 DSH **主题 token**（`--dsw-
 
 > 面板钩子对 CSS Modules 哈希变化免疫：稳定属性与类名后缀不随发版改变，已测构建的哈希仅作为回退保留。只有当 DSH 改变这些属性的结构/语义时，才需要更新选择器。
 
+### 🛠 健壮性（v1.0.3）
+
+之前版本一旦掉样式就回不来了：宿主重建 DOM、别的插件重载、或热替换留下孤儿节点时，`<style>` 会被从 head 摘掉，切换器退化成无样式裸元素——壁纸消失、缩略图被拉成整行，除了手动刷新没有别的办法。
+
+v1.0.3 让装饰自愈：
+
+- **切换器专属常驻样式表**：它的 CSS 放在独立的 `<style>` 里，`applyMode()` 永远不会重写它，明暗切换重绘时不会丢。
+- **挂载时幂等清理**：先移除上一代实例残留的节点，热替换不再留下无样式的孤儿菜单。
+- **重新挂回守卫**：`<head>`/`<body>` 上的 `MutationObserver` 加 2 秒定时器，发现节点脱离文档就立刻挂回；修复记录在 `window.__blissDiag`（`{applies, repairs}`）里便于排查。
+
+外观与之前完全一致。
 ### 🗑 卸载
 
 在插件管理器中移除，或（先退出应用）：

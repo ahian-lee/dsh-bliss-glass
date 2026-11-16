@@ -1,4 +1,4 @@
-// dsh-bliss-glass v1.0.0 — Bliss wallpaper & frosted-glass UI for DeepSeek Harness
+// dsh-bliss-glass v1.0.3 - Bliss wallpaper & frosted-glass UI for DeepSeek Harness
 // @local/bliss-wallpaper v2.5.0 — 壁纸 + 二级菜单切换器（选图/添加/自动处理）+ 浮动玻璃组件
 window.__ModuleLoader__.load({
   id: 'dsh-bliss-glass',
@@ -14,6 +14,7 @@ window.__ModuleLoader__.load({
     const SWITCH_ID = 'bliss-wallpaper-switcher';
     const MENU_ID = 'bliss-wallpaper-menu';
     const THEMEBTN_ID = 'bliss-theme-toggle';
+    const MENU_STYLE_ID = 'bliss-wallpaper-menu-style';
     const LS_INDEX = 'bliss-wallpaper:index';
     const LS_CUSTOM = 'bliss-wallpaper:custom';
     const MAX_CUSTOM = 8;
@@ -35,6 +36,27 @@ window.__ModuleLoader__.load({
       '#' + SWITCH_ID + ' button.light, #' + THEMEBTN_ID + ' button.light { background: rgba(255,255,255,.55); color: #3a3f45; box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 1px 5px rgba(0,0,0,.18); }',
       '#' + SWITCH_ID + ' button.dark, #' + THEMEBTN_ID + ' button.dark { background: rgba(28,32,38,.6); color: #e8eaed; box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 1px 5px rgba(0,0,0,.4); }',
       /* ── 二级切换菜单（自带玻璃样式，明暗主题各自成套）── */
+      '#' + MENU_ID + ' { position: fixed; right: 12px; bottom: 50px; z-index: 41; width: 252px; padding: 10px; border-radius: 14px; display: none; }',
+      '#' + MENU_ID + '.open { display: block; }',
+      '#' + MENU_ID + '.light { background: rgba(255,255,255,0.66); border: 0.5px solid rgba(255,255,255,0.6); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 12px 36px rgba(0,0,0,0.16); backdrop-filter: blur(22px) saturate(1.5); color: #26292e; }',
+      '#' + MENU_ID + '.dark { background: rgba(28,32,38,0.70); border: 0.5px solid rgba(255,255,255,0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 12px 36px rgba(0,0,0,0.42); backdrop-filter: blur(22px) saturate(1.5); color: #e8eaed; }',
+      '#' + MENU_ID + ' .bw-title { font-size: 12px; font-weight: 600; margin: 2px 4px 8px; opacity: .75; letter-spacing: .04em; }',
+      '#' + MENU_ID + ' .bw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }',
+      '#' + MENU_ID + ' .bw-thumb { position: relative; height: 46px; border-radius: 8px; cursor: pointer; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.25); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; overflow: hidden; }',
+      '#' + MENU_ID + ' .bw-thumb:hover { transform: scale(1.05); }',
+      '#' + MENU_ID + ' .bw-thumb.sel { border-color: #4d93f8; box-shadow: 0 0 0 2px rgba(77,147,248,.35); }',
+      '#' + MENU_ID + ' .bw-thumb .bw-name { position: absolute; left: 0; right: 0; bottom: 0; font-size: 9px; line-height: 14px; text-align: center; background: rgba(0,0,0,.4); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }',
+      '#' + MENU_ID + ' .bw-actions { display: flex; gap: 6px; margin-top: 10px; }',
+      '#' + MENU_ID + ' .bw-actions button { flex: 1; height: 28px; border-radius: 8px; border: 0.5px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.10); color: inherit; font-size: 11px; cursor: pointer; padding: 0; }',
+      '#' + MENU_ID + ' .bw-actions button:hover { background: rgba(255,255,255,0.20); }',
+      '#' + MENU_ID + '.light .bw-actions button { border-color: rgba(0,0,0,0.12); background: rgba(255,255,255,0.5); }',
+      '#' + MENU_ID + '.light .bw-actions button:hover { background: rgba(255,255,255,0.78); }',
+      '#' + MENU_ID + ' .bw-add-input { display: none; }',
+    ].join('\n');
+
+    // 菜单专用「常驻」样式表：applyMode() 永远不会重写它。
+    // 这样无论在哪种模式、或热替换/重复加载的瞬间，菜单都不会退化成无样式裸元素。
+    const menuCss = [
       '#' + MENU_ID + ' { position: fixed; right: 12px; bottom: 50px; z-index: 41; width: 252px; padding: 10px; border-radius: 14px; display: none; }',
       '#' + MENU_ID + '.open { display: block; }',
       '#' + MENU_ID + '.light { background: rgba(255,255,255,0.66); border: 0.5px solid rgba(255,255,255,0.6); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 12px 36px rgba(0,0,0,0.16); backdrop-filter: blur(22px) saturate(1.5); color: #26292e; }',
@@ -221,9 +243,22 @@ window.__ModuleLoader__.load({
       inject: ['theme'],
       apply(ctx) {
         const themeSvc = ctx.theme || null;
+        // 幂等清理：先移除上一代实例可能残留的节点。
+        // 热替换(HMR)/重复加载时，若上一代的清理没跑干净，会留下「孤儿菜单」——
+        // 它的样式表已经不在，于是渲染成无样式裸元素（缩略图被拉成整行）。
+        [STYLE_ID, MENU_STYLE_ID, ROOT_ID, SWITCH_ID, MENU_ID, THEMEBTN_ID].forEach((id) => {
+          const old = document.getElementById(id);
+          if (old && old.parentNode) old.parentNode.removeChild(old);
+        });
+
         const styleEl = document.createElement('style');
         styleEl.id = STYLE_ID;
         document.head.appendChild(styleEl);
+
+        const menuStyleEl = document.createElement('style');
+        menuStyleEl.id = MENU_STYLE_ID;
+        menuStyleEl.textContent = menuCss;
+        document.head.appendChild(menuStyleEl);
 
         const root = document.createElement('div');
         root.id = ROOT_ID;
@@ -436,13 +471,42 @@ window.__ModuleLoader__.load({
         const obs = new MutationObserver(applyTheme);
         obs.observe(document.body, { attributes: true, attributeFilter: ['data-ds-dark-theme'] });
 
+        // ── 样式/节点守卫（v2.6.6）──
+        // 其他插件重载、宿主重建 DOM、或热替换的清理时序异常时，可能把我们的
+        // <style> 从 head 里摘掉、或让节点脱离文档。那时界面会整片退化成无样式
+        // 裸元素（壁纸没了、菜单缩略图被拉成整行）。这里一旦检测到就立刻挂回去，
+        // 并把「被摘掉的是什么」记进 window.__blissDiag 供排查。
+        window.__blissDiag = window.__blissDiag || { applies: 0, repairs: [] };
+        window.__blissDiag.applies += 1;
+
+        const reattach = () => {
+          const missing = [];
+          if (!styleEl.isConnected) { document.head.appendChild(styleEl); missing.push('style'); }
+          if (!menuStyleEl.isConnected) { document.head.appendChild(menuStyleEl); missing.push('menuStyle'); }
+          if (!root.isConnected) { document.body.prepend(root); missing.push('root'); }
+          if (!switchRoot.isConnected) { document.body.appendChild(switchRoot); missing.push('switcher'); }
+          if (!themeBtnRoot.isConnected) { document.body.appendChild(themeBtnRoot); missing.push('themebtn'); }
+          if (!menuRoot.isConnected) { document.body.appendChild(menuRoot); missing.push('menu'); }
+          if (missing.length) {
+            window.__blissDiag.repairs.push({ at: new Date().toISOString(), missing: missing });
+            if (window.__blissDiag.repairs.length > 20) window.__blissDiag.repairs.shift();
+          }
+        };
+        const guard = new MutationObserver(reattach);
+        guard.observe(document.head, { childList: true });
+        guard.observe(document.body, { childList: true });
+        const guardTimer = setInterval(reattach, 2000);
+
         return () => {
           obs.disconnect();
+          guard.disconnect();
+          clearInterval(guardTimer);
           closeMenu();
           root.remove();
           switchRoot.remove();
           menuRoot.remove();
           themeBtnRoot.remove();
+          menuStyleEl.remove();
           styleEl.remove();
         };
       },
