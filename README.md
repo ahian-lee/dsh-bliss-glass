@@ -93,6 +93,11 @@ Appearance is unchanged.
 On DSH 0.2.2 the sidebar brand mark and the right-hand titlebar controls shifted out of place. The cause was a `:has(> [data-shell-overlay])` selector combined with a `::before` glass layer on the app frame: because `data-windows-titlebar` lives on `<html>`, that selector could match the frame itself and its new `backdrop-filter` became the containing block for `position: fixed` children, so the titlebar row was pushed down and the 40px logo row collapsed.
 
 v1.0.4 drops the `:has()` matcher and the `::before` glass layer. The frame's transparent background stays, and all remaining `backdrop-filter` rules apply to leaf surfaces (cards, bubbles, sidebar column) that own no positioned children. Appearance elsewhere is unchanged.
+### 🩹 Sidebar control fix (v1.0.5)
+
+The sidebar toggle and the collapsed "new session" button are `position: fixed`, aligned to the window titlebar row via `top: calc((var(--dsh-windows-titlebar-height) - 28px) / 2)`. That only works while no ancestor establishes a containing block. The plugin's `backdrop-filter` on `[class*="_sidebarCol"]` did exactly that, so those buttons were anchored to the sidebar column and slid down into the padding area.
+
+v1.0.5 removes that rule. The sidebar keeps its translucent glass because the tint comes from `--dsw-specific-sidebar-fill` (10% light / 28% dark), which is unchanged — only the extra blur on the column is gone, and the wallpaper still shows through.
 ### 🗑 Uninstall
 
 Remove the plugin from the Plugin Manager, or (quit the app first):
@@ -179,6 +184,11 @@ v1.0.3 让装饰自愈：
 在 DSH 0.2.2 上，侧栏品牌标志与右上角标题栏控件会移位。原因是 `:has(> [data-shell-overlay])` 选择器配合应用框架上的 `::before` 玻璃层：`data-windows-titlebar` 挂在 `<html>` 上，该选择器可能匹配到框架自身，而它新增的 `backdrop-filter` 会成为 `position: fixed` 子元素的包含块，于是标题栏整行被下推、40px 的 logo 行被压塌。
 
 v1.0.4 移除 `:has()` 匹配与 `::before` 玻璃层，保留框架的透明背景；其余 `backdrop-filter` 都作用在不含定位子元素的叶子表面（卡片、气泡、侧栏列）上。其他部分外观不变。
+### 🩹 侧栏控件定位修复（v1.0.5）
+
+侧栏折叠按钮和收起状态下的「新会话」按钮都是 `position: fixed`，靠 `top: calc((var(--dsh-windows-titlebar-height) - 28px) / 2)` 对齐到窗口标题栏那一行。前提是祖先链上没有元素产生包含块。插件给 `[class*="_sidebarCol"]` 加的 `backdrop-filter` 正好打破了这个前提，于是按钮改以侧栏列为基准定位、滑进了内边距区域。
+
+v1.0.5 移除该规则。侧栏的半透明玻璃感仍然保留——底色来自 `--dsw-specific-sidebar-fill`（浅色 10% / 深色 28%），该 token 未改动，只是去掉了列上那层额外模糊，壁纸照样透得出来。
 ### 🗑 卸载
 
 在插件管理器中移除，或（先退出应用）：

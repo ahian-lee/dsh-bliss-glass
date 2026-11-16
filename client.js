@@ -1,4 +1,4 @@
-// dsh-bliss-glass v1.0.4 - Bliss wallpaper & frosted-glass UI for DeepSeek Harness
+// dsh-bliss-glass v1.0.5 - Bliss wallpaper & frosted-glass UI for DeepSeek Harness
 // @local/bliss-wallpaper v2.5.0 — 壁纸 + 二级菜单切换器（选图/添加/自动处理）+ 浮动玻璃组件
 window.__ModuleLoader__.load({
   id: 'dsh-bliss-glass',
@@ -142,10 +142,6 @@ window.__ModuleLoader__.load({
       '  backdrop-filter: blur(10px) saturate(1.3);',
       '  -webkit-backdrop-filter: blur(10px) saturate(1.3);',
       '  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;',
-      '}',
-      '.ZTP-Xa_sidebarCol, .mP3x-q_sidebarCol, [class*="_sidebarCol"] {',
-      '  backdrop-filter: blur(var(--bliss-glass-blur)) saturate(1.35);',
-      '  -webkit-backdrop-filter: blur(var(--bliss-glass-blur)) saturate(1.35);',
       '}',
       '[class*="_toast_l6cvn_"] { backdrop-filter: blur(14px) saturate(1.3); }',
       '[data-windows-titlebar] .ZTP-Xa_frame, [data-windows-titlebar] .mP3x-q_frame { background: transparent !important; }',
