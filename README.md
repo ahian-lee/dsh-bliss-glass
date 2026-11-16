@@ -88,6 +88,11 @@ v1.0.3 makes the decoration self-healing:
 - **Re-attach guard.** A `MutationObserver` on `<head>`/`<body>` plus a 2-second timer re-attaches any detached node. Repairs are recorded in `window.__blissDiag` (`{applies, repairs}`) for troubleshooting.
 
 Appearance is unchanged.
+### 🩹 Layout fix (v1.0.4)
+
+On DSH 0.2.2 the sidebar brand mark and the right-hand titlebar controls shifted out of place. The cause was a `:has(> [data-shell-overlay])` selector combined with a `::before` glass layer on the app frame: because `data-windows-titlebar` lives on `<html>`, that selector could match the frame itself and its new `backdrop-filter` became the containing block for `position: fixed` children, so the titlebar row was pushed down and the 40px logo row collapsed.
+
+v1.0.4 drops the `:has()` matcher and the `::before` glass layer. The frame's transparent background stays, and all remaining `backdrop-filter` rules apply to leaf surfaces (cards, bubbles, sidebar column) that own no positioned children. Appearance elsewhere is unchanged.
 ### 🗑 Uninstall
 
 Remove the plugin from the Plugin Manager, or (quit the app first):
@@ -169,6 +174,11 @@ v1.0.3 让装饰自愈：
 - **重新挂回守卫**：`<head>`/`<body>` 上的 `MutationObserver` 加 2 秒定时器，发现节点脱离文档就立刻挂回；修复记录在 `window.__blissDiag`（`{applies, repairs}`）里便于排查。
 
 外观与之前完全一致。
+### 🩹 布局修复（v1.0.4）
+
+在 DSH 0.2.2 上，侧栏品牌标志与右上角标题栏控件会移位。原因是 `:has(> [data-shell-overlay])` 选择器配合应用框架上的 `::before` 玻璃层：`data-windows-titlebar` 挂在 `<html>` 上，该选择器可能匹配到框架自身，而它新增的 `backdrop-filter` 会成为 `position: fixed` 子元素的包含块，于是标题栏整行被下推、40px 的 logo 行被压塌。
+
+v1.0.4 移除 `:has()` 匹配与 `::before` 玻璃层，保留框架的透明背景；其余 `backdrop-filter` 都作用在不含定位子元素的叶子表面（卡片、气泡、侧栏列）上。其他部分外观不变。
 ### 🗑 卸载
 
 在插件管理器中移除，或（先退出应用）：

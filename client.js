@@ -1,4 +1,4 @@
-// dsh-bliss-glass v1.0.3 - Bliss wallpaper & frosted-glass UI for DeepSeek Harness
+// dsh-bliss-glass v1.0.4 - Bliss wallpaper & frosted-glass UI for DeepSeek Harness
 // @local/bliss-wallpaper v2.5.0 — 壁纸 + 二级菜单切换器（选图/添加/自动处理）+ 浮动玻璃组件
 window.__ModuleLoader__.load({
   id: 'dsh-bliss-glass',
@@ -148,11 +148,7 @@ window.__ModuleLoader__.load({
       '  -webkit-backdrop-filter: blur(var(--bliss-glass-blur)) saturate(1.35);',
       '}',
       '[class*="_toast_l6cvn_"] { backdrop-filter: blur(14px) saturate(1.3); }',
-      '[data-windows-titlebar] :has(> [data-shell-overlay]), [data-windows-titlebar] .ZTP-Xa_frame, [data-windows-titlebar] .mP3x-q_frame { background: transparent !important; }',
-      '[data-windows-titlebar] :has(> [data-shell-overlay]):before, [data-windows-titlebar] .ZTP-Xa_frame:before, [data-windows-titlebar] .mP3x-q_frame:before {',
-      '  backdrop-filter: blur(20px) saturate(1.35);',
-      '  -webkit-backdrop-filter: blur(20px) saturate(1.35);',
-      '}',
+      '[data-windows-titlebar] .ZTP-Xa_frame, [data-windows-titlebar] .mP3x-q_frame { background: transparent !important; }',
       '[class*="2H3hWW_root"], [class*="2Q3W_root"] { background: transparent !important; }',
       /* ── 统一玻璃：所有框框都用聊天框卡片这一种配方 ── */
       '[class*="Xt1eiG_panel"], [class*="MTwa3q_panel"], [class*="_2WTFBq_panel"], [class*="v1kfCW_panel"],',
